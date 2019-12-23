@@ -6,37 +6,58 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.loginmvvm.R;
+import com.example.loginmvvm.view.ui.Activity2.ActivityDemo;
 import com.example.loginmvvm.view.ui.qrscan.QrScanFragment;
 import com.google.android.material.navigation.NavigationView;
 
-public class NavigationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class NavigationActivity extends AppCompatActivity {
     DrawerLayout drawer;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
-       Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-       setSupportActionBar(toolbar);
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
+        //for hamburger menu
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //this is hamburger
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView = findViewById(R.id.navigation_view);
+        //annonymus class for interface callback
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.qr_scan) {
+                openFragment("QR Scan",new QrScanFragment());
+
+            }
+            if (id==R.id.activity2){
+                Intent intent = new Intent(NavigationActivity.this, ActivityDemo.class);
+                startActivity(intent);
+            }
+            item.setChecked(true);
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        });
 
 
-        openQrFragment();
+
+
+        openFragment("QR Scan",new QrScanFragment());
 
 
 
@@ -48,19 +69,9 @@ public class NavigationActivity extends AppCompatActivity implements NavigationV
 
     }
 
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.qr_scan) {
-           openQrFragment();
-        }
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    public void openQrFragment(){
+    public void openFragment(String title, Fragment fragment){
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.contentnav, new QrScanFragment()).commit();
+        getSupportActionBar().setTitle(title);
     }
 }
