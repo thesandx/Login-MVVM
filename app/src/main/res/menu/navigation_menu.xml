@@ -7,12 +7,13 @@
     android:checkableBehavior="single">
     <item
         android:id="@+id/qr_scan"
-
+        android:icon="@drawable/ic_scan_black_24dp"
 
         android:title="@string/qr_code" />
 
     <item
         android:id="@+id/activity2"
+        android:icon="@drawable/ic_scan_black_24dp"
         android:title="@string/menu2"
         />
 
